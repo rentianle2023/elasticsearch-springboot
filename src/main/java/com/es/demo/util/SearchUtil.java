@@ -7,10 +7,10 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 public class SearchUtil {
 
@@ -20,6 +20,12 @@ public class SearchUtil {
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
                 .query(getQueryBuilder(dto));
+
+        if(dto.getSortBy() != null){
+            searchSourceBuilder.sort(
+                    dto.getSortBy(),
+                    dto.getOrder() == null ? SortOrder.ASC : dto.getOrder());
+        }
 
         SearchRequest searchRequest = new SearchRequest(index);
         searchRequest.source(searchSourceBuilder);

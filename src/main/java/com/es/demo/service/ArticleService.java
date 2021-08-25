@@ -15,6 +15,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static com.es.demo.helper.Indices.ARTICLE_INDEX;
 
@@ -58,6 +60,12 @@ public class ArticleService {
             List<Article> articles = new LinkedList<>();
             for (SearchHit hit : searchHits) {
                 Article article = JSON.parseObject(hit.getSourceAsString(),Article.class);
+                /*Map<String, HighlightField> highlightFields = hit.getHighlightFields();
+                highlightFields.forEach((k,v) -> {
+                    if(highlightFields.containsKey("title")){
+                        article.setTitle(highlightFields.get("title").fragments()[0].toString());
+                    }
+                });*/
                 articles.add(article);
             }
             return articles;

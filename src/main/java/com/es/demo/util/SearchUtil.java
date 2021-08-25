@@ -1,12 +1,12 @@
 package com.es.demo.util;
 
 import com.es.demo.search.SearchRequestDTO;
+import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.index.query.MultiMatchQueryBuilder;
-import org.elasticsearch.index.query.Operator;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.util.CollectionUtils;
 
@@ -20,6 +20,16 @@ public class SearchUtil {
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
                 .query(getQueryBuilder(dto));
+
+
+        /*BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.rangeQuery("created").gte("2020-08-10"));
+        searchSourceBuilder.query(boolQueryBuilder);
+        TermQueryBuilder termQueryBuilder = QueryBuilders.termQuery(dto.getFields().get(0),dto.getSearchTerm());
+
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+                .query(termQueryBuilder);
+
+        searchSourceBuilder.highlighter(new HighlightBuilder().field("title").requireFieldMatch(false).postTags("</123>").preTags("<123>"));*/
 
         if(dto.getSortBy() != null){
             searchSourceBuilder.sort(
@@ -48,6 +58,7 @@ public class SearchUtil {
             fields.forEach(queryBuilder::field);
             return queryBuilder;
         }
+
 
         return dto.getFields().stream()
                 .findFirst()
